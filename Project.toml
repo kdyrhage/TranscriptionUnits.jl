@@ -1,0 +1,24 @@
+name = "TranscriptionUnits"
+uuid = "6f7a50ce-f3e4-458b-b2a6-aa9dc75a4671"
+authors = ["Karl Dyrhage <karl.dyrhage@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+FASTX = "c2308a5c-f048-11e8-3e8a-31650f418d12"
+GenomicAnnotations = "4f8a0a0a-376d-5ac0-ab14-e88793df67f0"
+Git = "d7ba0133-e1db-5d97-8f8c-041e4b3a1eb2"
+Scratch = "6c6a2e73-6563-6170-7368-637461726353"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+CSV = "0.10.15"
+Conda = "1.10.2"
+DataFrames = "1.7.0"
+FASTX = "2.1.7"
+GenomicAnnotations = "0.4.4"
+Git = "1.3.1"
+Scratch = "1.2.1"
+Test = "1.11.0"
