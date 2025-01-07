@@ -95,9 +95,10 @@ function addterminators!(g::AbstractVector{Gene}, boundaries::Vector{Tuple{Int64
 end
 
 function issamestrand(genes::AbstractVector{Gene}, t::Tuple{Int64, Char})
+    termindatorstrand = t[2] == '+'
     for i in 2:length(genes)
-        if genes.stop[i-1] <= t[1] <= genes.start[i]
-            genes.strand[i-1] == genes.strand[i] == t[2] && return true
+        if locus(genes[i - 1]).stop <= t[1] <= locus(genes[i]).start
+            iscomplement(genes[i - 1]) == iscomplement(genes[i]) == terminatorstrand && return true
         end
     end
     return false
