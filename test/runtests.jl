@@ -4,6 +4,6 @@ using Test
 
 @testset "TranscriptionUnits" begin
     gbk = readgbk("A0901.gbk")[1]
-    boundaries = transcriptionunits(gbk, 7, TranscriptionUnits.batter(gbk))
+    boundaries = transcriptionunits(gbk, TranscriptionUnits.batter(gbk))
     @test !isempty(boundaries)
 end

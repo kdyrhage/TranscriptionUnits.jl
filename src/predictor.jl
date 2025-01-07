@@ -46,7 +46,7 @@ end
 
 function isintergenic(g::AbstractVector{Gene}, pos)
     for i in eachindex(g)
-        locus(g[i]).start <= pos <= locus(g[i]).stop && feature(g[i]) in [:gene, :CDS, :tRNA, :rRNA] && return false
+        locus(g[i]).start <= pos <= locus(g[i]).stop && feature(g[i]) in [:CDS, :tRNA, :rRNA] && return false
     end
     true
 end
@@ -54,7 +54,7 @@ end
 function isintergenic(g::AbstractVector{Gene}, pos, o)
     for i in eachindex(g)
         overlap = o * (locus(g[i]).stop - locus(g[i]).start)
-        (locus(g[i]).start + overlap) <= pos <= (locus(g[i]).stop - overlap) && feature(g[i]) in [:gene, :CDS, :tRNA, :rRNA] && return false
+        (locus(g[i]).start + overlap) <= pos <= (locus(g[i]).stop - overlap) && feature(g[i]) in [:CDS, :tRNA, :rRNA] && return false
     end
     true
 end
@@ -95,7 +95,7 @@ function addterminators!(g::AbstractVector{Gene}, boundaries::Vector{Tuple{Int64
 end
 
 function issamestrand(genes::AbstractVector{Gene}, t::Tuple{Int64, Char})
-    termindatorstrand = t[2] == '+'
+    terminatorstrand = t[2] == '+'
     for i in 2:length(genes)
         if locus(genes[i - 1]).stop <= t[1] <= locus(genes[i]).start
             iscomplement(genes[i - 1]) == iscomplement(genes[i]) == terminatorstrand && return true
@@ -114,17 +114,18 @@ function addterminators!(g::AbstractVector{Gene}, boundaries::Vector{Tuple{Int64
 end
 
 
-transcriptionunits(g, d = 7, t = Tuple{Int, Char}[]; overlap = 0, batter_output = tempname()) =
-    transcriptionunit(g, d, t; kwargs...)
-transcriptionunits(g::GenomicAnnotations.Record, d::Function, t; kwargs...) =
-    transcriptionunits(g, d(genedist(g.genes)), t; kwargs...)
-transcriptionunits(genomes::AbstractVector{GenomicAnnotations.Record}, d, t; kwargs...) =
-    map(g -> transcriptionunits(g, d, t; kwargs...), genomes)
-transcriptionunits(g::GenomicAnnotations.Record, d::Int; kwargs...) = transcriptionunits(g, d, batter(g; kwargs...); kwargs...)
-function transcriptionunits(genome::GenomicAnnotations.Record, distthreshold, terminators; kwargs...)
-    d = directones(genome)
-    dists = [genedist(genome.genes, directone) for directone in d]
+transcriptionunits(g; kwargs...) = transcriptionunits(g, batter(g)m; kwargs...)
+transcriptionunits(G::AbstractVector{GenomicAnnotations.Record}, t; kwargs...) = foreach(g -> transcriptionunits(g, t; kwargs...), G)
+transcriptionunits(G::AbstractVector{GenomicAnnotations.Record}; kwargs...) = foreach(g -> transcriptionunits(g, batter(g); kwargs...), G)
+transcriptionunits(f::AbstractString, t; kwargs...) = transcriptionunits(readgbk(f), t; kwargs...)
+function transcriptionunits(genome::GenomicAnnotations.Record, terminators::Vector{Tuple{Int, Char}}; kwargs...)
+    distthreshold = get(kwargs, :distthreshold, 7)
+    overlap = get(kwargs, :overlap, 0)
+    genes = @genes(genome, CDS)
+    d = directones(genes)
+    dists = [genedist(genes, directone) for directone in d]
     boundaries = tu_boundaries(d, dists, distthreshold)
-    addterminators!(genome.genes, boundaries, terminators, get(kwargs, :overlap, 0))
-    return boundaries
+    addterminators!(genes, boundaries, terminators, overlap)
+    filter!(x -> x[1] != x[2], boundaries)
+    return map(x -> x[1]:x[2], boundaries)
 end
