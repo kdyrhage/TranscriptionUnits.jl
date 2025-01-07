@@ -20,11 +20,6 @@ function get_batter()
         @eval begin
             using Git
             run(`$(git()) clone https://github.com/lulab/BATTER.git $batter_root`)
-            # using Conda
-            # Conda.create(batter_env)
-            # open(joinpath(batter_root, "condaroot"), "w") do f
-            #     print(f, Conda.prefix(batter_env))
-            # end
         end
     end
     prerequisites = ["pyfaidx", "transformers", "pytorch", "pandas", "numpy"]
