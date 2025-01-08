@@ -46,5 +46,6 @@ include("batter.jl")
 include("predictor.jl")
 
 export transcriptionunits
+export batter
 
 end # module TranscriptionalUnits

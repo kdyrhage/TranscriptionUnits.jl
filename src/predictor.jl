@@ -114,30 +114,17 @@ function addterminators!(g::AbstractVector{Gene}, boundaries::Vector{Tuple{Int64
 end
 
 
-transcriptionunits(G::AbstractVector{GenomicAnnotations.Record}, t; kwargs...) = foreach(g -> transcriptionunits(g, t; kwargs...), G)
-transcriptionunits(f::AbstractString, t; kwargs...) = transcriptionunits(readgbk(f), t; kwargs...)
-function transcriptionunits(genome::GenomicAnnotations.Record, terminators::Vector{Tuple{Int, Char}}; kwargs...)
-    distthreshold = get(kwargs, :distthreshold, 7)
-    overlap = get(kwargs, :overlap, 0)
-    genes = @genes(genome, CDS)
-    d = directones(genes)
-    dists = [genedist(genes, directone) for directone in d]
-    boundaries = tu_boundaries(d, dists, distthreshold)
-    addterminators!(genes, boundaries, terminators, overlap)
-    filter!(x -> x[1] != x[2], boundaries)
-    return map(x -> x[1]:x[2], boundaries)
-end
-
-
 transcriptionunits(G::AbstractVector{GenomicAnnotations.Record}; kwargs...) = foreach(g -> transcriptionunits(g; kwargs...), G)
 transcriptionunits(f::AbstractString; kwargs...) = transcriptionunits(readgbk(f); kwargs...)
 function transcriptionunits(genome::GenomicAnnotations.Record; kwargs...)
     distthreshold = get(kwargs, :distthreshold, 7)
-    overlap = get(kwargs, :overlap, 0)
     genes = @genes(genome, CDS)
     d = directones(genes)
     dists = [genedist(genes, directone) for directone in d]
     boundaries = tu_boundaries(d, dists, distthreshold)
+    if haskey(kwargs, :terminators)
+        addterminators!(genes, boundaries, terminators, overlap)
+    end
     filter!(x -> x[1] != x[2], boundaries)
     return map(x -> x[1]:x[2], boundaries)
 end
