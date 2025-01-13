@@ -114,7 +114,7 @@ function addterminators!(g::AbstractVector{Gene}, boundaries::Vector{Tuple{Int64
 end
 
 
-transcriptionunits(G::AbstractVector{GenomicAnnotations.Record}; kwargs...) = foreach(g -> transcriptionunits(g; kwargs...), G)
+transcriptionunits(G::AbstractVector{GenomicAnnotations.Record}; kwargs...) = map(g -> transcriptionunits(g; kwargs...), G)
 transcriptionunits(f::AbstractString; kwargs...) = transcriptionunits(readgbk(f); kwargs...)
 function transcriptionunits(genome::GenomicAnnotations.Record; kwargs...)
     distthreshold = get(kwargs, :distthreshold, 7)

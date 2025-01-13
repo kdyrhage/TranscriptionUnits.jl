@@ -7,6 +7,8 @@ using Test
     chr = readgbk("A0901.gbk")[1]
     boundaries = transcriptionunits(chr)
     @test !isempty(boundaries)
+    boundaries = transcriptionunits("A0901.gbk")
+    @test !isempty(boundaries)
 end
 
 #@testset "BATTER" begin
