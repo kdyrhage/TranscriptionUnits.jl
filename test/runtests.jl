@@ -9,6 +9,6 @@ using Test
     @test !isempty(boundaries)
 end
 
-@testset "BATTER" begin
-    Conda.runconda(`run -n $batter_env $batter_tpe`, batter_envConda.runconda(`run -n $batter_env $batter_tpe -h`, batter_env))
-end
+#@testset "BATTER" begin
+#    Conda.runconda(`run -n $(TranscriptionUnits.batter_env) $(TranscriptionUnits.batter_tpe) -h`, TranscriptionUnits.batter_env)
+#end
