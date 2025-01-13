@@ -1,5 +1,6 @@
 using TranscriptionUnits
 using GenomicAnnotations
+using Conda
 using Test
 
 @testset "TranscriptionUnits" begin
