@@ -34,7 +34,7 @@ function batter(fasta::AbstractString, output; kwargs...)
     elseif !TranscriptionUnits.cuda_available && !isempty(args)
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output $args`, batter_env)
     else
-        @warn("Failed to run BATTER")
+        Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output --device cpu`, batter_env)
     end
     return parse_batter(output)
 end
