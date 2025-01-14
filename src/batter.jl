@@ -29,7 +29,7 @@ function batter(fasta::AbstractString, output; kwargs...)
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output $args`, batter_env)
     elseif isempty(args)
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output --device cpu`, batter_env)
-    elseif !haskey(kwargs, "device") && !TranscriptionUnits.cuda_available
+    elseif !haskey(kwargs, "device") && !isempty(args) && !TranscriptionUnits.cuda_available
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output --device cpu $args`, batter_env)
     else
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output $args`, batter_env)
