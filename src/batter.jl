@@ -25,14 +25,16 @@ end
 
 function batter(fasta::AbstractString, output; kwargs...)
     args = join([string("--", k, " ", v) for (k, v) in kwargs], " ")
-    if isempty(args) && TranscriptionUnits.cuda_available
+    if TranscriptionUnits.cuda_available && !isempty(args)
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output $args`, batter_env)
-    elseif isempty(args)
-        Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output --device cpu`, batter_env)
-    elseif !haskey(kwargs, "device") && !isempty(args) && !TranscriptionUnits.cuda_available
+    elseif TranscriptionUnits.cuda_available && isempty(args)
+        Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output`, batter_env)
+    elseif !TranscriptionUnits.cuda_available && !isempty(args) && !haskey(kwargs, "device")
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output --device cpu $args`, batter_env)
-    else
+    elseif !TranscriptionUnits.cuda_available && !isempty(args)
         Conda.runconda(`run -n $batter_env $batter_tpe --fasta $fasta --output $output $args`, batter_env)
+    else
+        @warn("Failed to run BATTER")
     end
     return parse_batter(output)
 end
