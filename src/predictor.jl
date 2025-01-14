@@ -123,7 +123,7 @@ function transcriptionunits(genome::GenomicAnnotations.Record; kwargs...)
     dists = [genedist(genes, directone) for directone in d]
     boundaries = tu_boundaries(d, dists, distthreshold)
     if haskey(kwargs, :terminators)
-        addterminators!(genes, boundaries, terminators, overlap)
+        addterminators!(genes, boundaries, get(kwargs, :terminators), overlap)
     end
     filter!(x -> x[1] != x[2], boundaries)
     return map(x -> x[1]:x[2], boundaries)
